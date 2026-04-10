@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SAP CPI Blog — Community platform for SAP Cloud Platform Integration experts.">
+  <title>SAP CPI Blog — Integration Insights</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2300d4ff'/><text x='4' y='22' font-size='14' font-weight='800' fill='%230a0e1a' font-family='Arial'>CPI</text></svg>">
+</head>
+<body>
+
+<div class="color-bar"></div>
+
+<!-- ══════════════════ NAVBAR ══════════════════ -->
+<nav class="navbar">
+  <div class="nav-brand" onclick="App.showView('home')">
+    <div class="nav-logo">CPI</div>
+    <span class="nav-title">SAP <span>CPI</span> Blog</span>
+  </div>
+
+  <ul class="nav-links">
+    <li><a href="#" onclick="App.showView('home');return false">Home</a></li>
+    <li><a href="#" onclick="App.filterCat('Beginner');App.showView('home');return false">Beginner</a></li>
+    <li><a href="#" onclick="App.filterCat('Advanced');App.showView('home');return false">Advanced</a></li>
+    <li><a href="#" onclick="App.filterCat('Tutorial');App.showView('home');return false">Tutorials</a></li>
+    <li id="write-nav-btn" style="display:none">
+      <button class="btn-nav-cta" onclick="App.showView('editor')">✍️ Write</button>
+    </li>
+  </ul>
+
+  <div id="nav-user-area"></div>
+</nav>
+
+<!-- ══════════════════ VIEW: HOME ══════════════════ -->
+<div id="v-home" class="view page">
+
+  <section class="hero">
+    <div class="hero-badge">🔗 SAP Integration Suite Community</div>
+    <h1>Your hub for <span class="hl">SAP CPI</span><br>knowledge & insights</h1>
+    <p>Explore integration patterns, tutorials, and real-world experiences from SAP CPI practitioners around the globe.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary btn-lg" onclick="App.showView('editor')">✍️ Write a Blog</button>
+      <button class="btn btn-secondary btn-lg" onclick="document.getElementById('blogs-anchor').scrollIntoView({behavior:'smooth'})">📚 Browse Posts</button>
+    </div>
+  </section>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num" id="s-blogs">0</div><div class="stat-label">Blogs</div></div>
+    <div class="stat-item"><div class="stat-num" id="s-authors">0</div><div class="stat-label">Authors</div></div>
+    <div class="stat-item"><div class="stat-num" id="s-views">0</div><div class="stat-label">Total Views</div></div>
+    <div class="stat-item"><div class="stat-num" id="s-users">0</div><div class="stat-label">Members</div></div>
+  </div>
+
+  <div class="main-layout" id="blogs-anchor">
+    <main>
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search blogs, tags, authors..." autocomplete="off">
+      </div>
+      <div class="section-header">
+        <div class="section-title">Latest Posts</div>
+        <button class="btn btn-sm btn-primary" onclick="App.showView('editor')">✍️ Write</button>
+      </div>
+      <div class="blog-grid" id="blog-list">
+        <div class="loading">⏳ Loading blogs...</div>
+      </div>
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-widget">
+        <div class="widget-title">About</div>
+        <p style="font-size:.85rem;color:var(--text2);line-height:1.6">A community platform for SAP CPI developers to share knowledge, tutorials, and best practices.</p>
+        <br>
+        <button class="btn btn-primary" style="width:100%" onclick="App.openModal('register')">Join the Community</button>
+      </div>
+
+      <div class="sidebar-widget">
+        <div class="widget-title">Categories</div>
+        <ul class="category-list" id="cat-list">
+          <li class="cat-item active"><span>All Posts</span><span class="cat-count">0</span></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-widget">
+        <div class="widget-title">Popular Tags</div>
+        <div class="tags-cloud" id="tags-cloud">
+          <span class="tag-cloud-item">#SAP CPI</span>
+        </div>
+      </div>
+
+      <div class="sidebar-widget">
+        <div class="widget-title">Quick Tips</div>
+        <ul style="list-style:none;font-size:.8rem;color:var(--text2);display:flex;flex-direction:column;gap:.55rem">
+          <li>📌 Use Groovy for complex transformations</li>
+          <li>📌 Test with sample payloads before deploy</li>
+          <li>📌 Leverage pre-built content packages</li>
+          <li>📌 Monitor via the message monitoring dashboard</li>
+          <li>📌 Use externalized parameters for config</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="footer">
+    <p>SAP CPI Blog — Built for the integration community 💙 | Powered by Node.js + MySQL</p>
+    <p style="margin-top:.4rem">Default admin: <code style="color:var(--accent);font-family:'JetBrains Mono',monospace">admin / admin123</code> — Change after first login!</p>
+  </footer>
+</div>
+
+<!-- ══════════════════ VIEW: BLOG ══════════════════ -->
+<div id="v-blog" class="view page">
+  <div class="blog-view" id="blog-view-content"></div>
+</div>
+
+<!-- ══════════════════ VIEW: EDITOR ══════════════════ -->
+<div id="v-editor" class="view page">
+  <div class="editor-page">
+    <button class="back-btn" onclick="App.showView('home')">← Back</button>
+    <h1 style="font-size:1.45rem;font-weight:800;letter-spacing:-.5px;margin-bottom:.35rem" id="editor-heading">Write a New Blog</h1>
+    <p style="font-size:.82rem;color:var(--text3);margin-bottom:1.5rem">
+      Share your SAP CPI knowledge. <kbd style="background:var(--bg3);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:.72rem">Ctrl+S</kbd> to save.
+    </p>
+
+    <!-- Cover Image -->
+    <div class="cover-upload" id="cover-area">
+      <div style="font-size:1.8rem;margin-bottom:.4rem">🖼️</div>
+      <div class="cover-upload-hint"><strong>Click to upload</strong> a cover image</div>
+      <div class="cover-upload-hint" style="font-size:.72rem;margin-top:.2rem">PNG, JPG, GIF, WebP — max 5 MB</div>
+    </div>
+    <input type="file" id="cover-file" accept="image/*" style="display:none">
+
+    <!-- Title -->
+    <div class="form-group">
+      <input type="text" class="form-input" id="editor-title" placeholder="Blog title — make it compelling!" style="font-size:1.2rem;font-weight:600;padding:.9rem 1rem">
+    </div>
+
+    <!-- Meta row -->
+    <div class="editor-meta">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Category</label>
+        <select class="form-input" id="editor-cat">
+          <option value="General">General</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Advanced">Advanced</option>
+          <option value="Tutorial">Tutorial</option>
+          <option value="Tips &amp; Tricks">Tips &amp; Tricks</option>
+          <option value="Architecture">Architecture</option>
+          <option value="Security">Security</option>
+          <option value="Performance">Performance</option>
+          <option value="News">News</option>
+          <option value="Case Study">Case Study</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Tags (comma-separated)</label>
+        <input type="text" class="form-input" id="editor-tags-inp" placeholder="SAP CPI, Groovy, REST, SOAP">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Excerpt (optional)</label>
+      <input type="text" class="form-input" id="editor-excerpt" placeholder="A brief description — auto-generated if left empty">
+    </div>
+
+    <!-- Toolbar -->
+    <label class="form-label" style="margin-bottom:.5rem;display:block">Content</label>
+    <div class="editor-toolbar">
+      <div class="toolbar-group">
+        <select class="tool-select" onchange="App.fmt('formatBlock',this.value);this.value=''">
+          <option value="">Format</option>
+          <option value="h1">Heading 1</option>
+          <option value="h2">Heading 2</option>
+          <option value="h3">Heading 3</option>
+          <option value="p">Paragraph</option>
+        </select>
+      </div>
+      <div class="toolbar-sep"></div>
+      <div class="toolbar-group">
+        <button class="tool-btn" data-cmd="bold"          title="Bold (Ctrl+B)"      onclick="App.fmt('bold')"><strong>B</strong></button>
+        <button class="tool-btn" data-cmd="italic"        title="Italic (Ctrl+I)"    onclick="App.fmt('italic')"><em>I</em></button>
+        <button class="tool-btn" data-cmd="underline"     title="Underline (Ctrl+U)" onclick="App.fmt('underline')"><u>U</u></button>
+        <button class="tool-btn" data-cmd="strikeThrough" title="Strikethrough"       onclick="App.fmt('strikeThrough')"><s>S</s></button>
+      </div>
+      <div class="toolbar-sep"></div>
+      <div class="toolbar-group">
+        <select class="tool-select" onchange="App.fmt('fontSize',this.value);this.value=''">
+          <option value="">Size</option>
+          <option value="1">Tiny</option><option value="2">Small</option>
+          <option value="3">Normal</option><option value="4">Large</option>
+          <option value="5">Larger</option><option value="6">Huge</option>
+        </select>
+        <label class="tool-btn" title="Text color" style="cursor:pointer">A
+          <input type="color" style="position:absolute;opacity:0;width:0;height:0" onchange="App.fmt('foreColor',this.value)">
+        </label>
+        <label class="tool-btn" title="Highlight" style="cursor:pointer;background:linear-gradient(45deg,#ff0,#0cf)">
+          <span style="background:var(--bg2);padding:1px 3px;border-radius:2px">H</span>
+          <input type="color" value="#ffff00" style="position:absolute;opacity:0;width:0;height:0" onchange="App.fmt('hiliteColor',this.value)">
+        </label>
+      </div>
+      <div class="toolbar-sep"></div>
+      <div class="toolbar-group">
+        <button class="tool-btn" title="Align left"   onclick="App.fmt('justifyLeft')">⬅</button>
+        <button class="tool-btn" title="Align center" onclick="App.fmt('justifyCenter')">⬛</button>
+        <button class="tool-btn" title="Align right"  onclick="App.fmt('justifyRight')">➡</button>
+      </div>
+      <div class="toolbar-sep"></div>
+      <div class="toolbar-group">
+        <button class="tool-btn" data-cmd="insertUnorderedList" title="Bullet list"   onclick="App.fmt('insertUnorderedList')">• —</button>
+        <button class="tool-btn" data-cmd="insertOrderedList"   title="Numbered list" onclick="App.fmt('insertOrderedList')">1.</button>
+        <button class="tool-btn" title="Indent"   onclick="App.fmt('indent')">→|</button>
+        <button class="tool-btn" title="Outdent"  onclick="App.fmt('outdent')">|←</button>
+      </div>
+      <div class="toolbar-sep"></div>
+      <div class="toolbar-group">
+        <button class="tool-btn" title="Link (Ctrl+K)"  onclick="App.insertLink()">🔗</button>
+        <button class="tool-btn" title="Image from URL" onclick="App.insertImgUrl()">🖼️</button>
+        <label class="tool-btn" title="Upload image" style="cursor:pointer">📤
+          <input type="file" accept="image/*" style="display:none" onchange="App.handleEditorFileInput(this)">
+        </label>
+        <button class="tool-btn" title="Table"      onclick="App.insertTable()">⊞</button>
+        <button class="tool-btn" title="Code block" onclick="App.insertCode()">{ }</button>
+        <button class="tool-btn" title="Blockquote" onclick="App.insertQuote()">"</button>
+        <button class="tool-btn" title="Divider"    onclick="App.insertHR()">—</button>
+      </div>
+      <div class="toolbar-sep"></div>
+      <div class="toolbar-group">
+        <button class="tool-btn" title="Undo (Ctrl+Z)" onclick="App.fmt('undo')">↩</button>
+        <button class="tool-btn" title="Redo (Ctrl+Y)" onclick="App.fmt('redo')">↪</button>
+        <button class="tool-btn" title="Clear format"   onclick="App.fmt('removeFormat')">Tx</button>
+      </div>
+    </div>
+
+    <div class="editor-body" id="editor-body" contenteditable="true"
+      data-ph="Start writing your blog here… Drag & drop images, use the toolbar, or Ctrl+B/I/K shortcuts.">
+    </div>
+    <div class="word-count" id="word-count">0 words</div>
+
+    <div class="editor-actions">
+      <button class="btn btn-ghost" onclick="App.showView('home')">Cancel</button>
+      <button class="btn btn-primary btn-lg" id="save-btn" onclick="App.saveBlog()">
+        <span id="save-btn-label">🚀 Publish Blog</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ VIEW: ADMIN ══════════════════ -->
+<div id="v-admin" class="view page">
+  <div class="admin-page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem">
+      <div>
+        <button class="back-btn" onclick="App.showView('home')">← Back</button>
+        <h1 style="font-size:1.4rem;font-weight:800;letter-spacing:-.5px">Admin Panel</h1>
+      </div>
+      <button class="btn btn-primary" onclick="App.showView('editor')">✍️ New Blog</button>
+    </div>
+
+    <div class="admin-grid" id="admin-stats"></div>
+
+    <div class="section-header"><div class="section-title">All Blogs</div></div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr>
+          <th>Title</th><th>Author</th><th>Status</th>
+          <th style="text-align:center">Views</th><th style="text-align:center">Likes</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="admin-blogs-body"></tbody>
+      </table>
+    </div>
+
+    <div class="section-header"><div class="section-title">Community Members</div></div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody id="admin-users-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ AUTH MODAL ══════════════════ -->
+<div class="overlay" id="auth-overlay" onclick="if(event.target===this)App.closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Welcome to SAP CPI Blog</div>
+      <button class="modal-close" onclick="App.closeModal()">✕</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-login"    onclick="App.switchTab('login')">Login</button>
+      <button class="tab"        id="tab-register" onclick="App.switchTab('register')">Sign Up</button>
+    </div>
+
+    <div class="form-error" id="auth-err"></div>
+
+    <!-- Login -->
+    <div id="login-form">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-input" id="l-user" placeholder="your_username" autocomplete="username" onkeydown="if(event.key==='Enter')App.handleLogin()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="l-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')App.handleLogin()">
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" id="login-btn" onclick="App.handleLogin()">Login</button>
+      <p style="text-align:center;font-size:.76rem;color:var(--text3);margin-top:.9rem">
+        Default admin: <code style="color:var(--accent)">admin / admin123</code>
+      </p>
+    </div>
+
+    <!-- Register -->
+    <div id="register-form" style="display:none">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Username *</label>
+          <input type="text" class="form-input" id="r-user" placeholder="unique_username" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Display Name</label>
+          <input type="text" class="form-input" id="r-name" placeholder="Your Name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bio (optional)</label>
+        <input type="text" class="form-input" id="r-bio" placeholder="SAP CPI developer, 5+ years...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Password *</label>
+          <input type="password" class="form-input" id="r-pass" placeholder="Min 6 characters">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm *</label>
+          <input type="password" class="form-input" id="r-conf" placeholder="Repeat password" onkeydown="if(event.key==='Enter')App.handleRegister()">
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" id="register-btn" onclick="App.handleRegister()">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
